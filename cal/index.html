@@ -1,106 +1,525 @@
-<!-- Lenguaje: HTML con JavaScript -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Calendario Trabajo Grupo Morado</title>
+    <meta charset="UTF-8">
 
-  <!-- FullCalendar CSS -->
-  <!--<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">-->
-  <link rel="stylesheet" href="./css/skeleton.css">
-  <link rel="stylesheet" href="./css/themes/monarch/theme.css">
-  <link rel="stylesheet" href="./css/themes/monarch/palettes/purple.css">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Calendario Trabajo Grupo Morado</title>
+    <!-- FullCalendar CSS -->
+    <!--<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">-->
+    <link rel="stylesheet" href="./css/skeleton.css">
+    <link rel="stylesheet" href="./css/themes/monarch/theme.css">
+    <link rel="stylesheet" href="./css/themes/monarch/palettes/purple.css">
   
-  <!-- FullCalendar JS -->
-  <!--<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>-->
-  <script src="./js/fullcalendar.global.js"></script>
-  <script src="./js/locales-all/global.js"></script>
-  <script src="./js/data.js"></script>
-  <script src="./css/themes/monarch/global.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const eventosJSON = trabajo2026;
-      // Inicialización del calendario
-      const calendarEl = document.getElementById('calendar');
-      const calendar = new FullCalendar.Calendar(calendarEl, {
-        height: '100%',
-        expandRows: true,
-        locale: 'es', // Idioma español
-        headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,multiMonthYear,listWeek,listMonth,listYear'
-        },
-        initialView: 'dayGridMonth',
-        titleFormat: { // will produce something like "Tuesday, September 18, 2018"
-          month: 'short',
-          year: 'numeric',
-          day: 'numeric',
-          weekday: 'short'
-        },
-        dayHeaderFormat: { weekday: 'long', month: 'numeric', day: 'numeric', omitCommas: true },
-        listDayAltFormat: {
-          month: 'long',
-          year: 'numeric',
-          day: 'numeric',
-          weekday: 'long'
-        },
-        weekNumbers: true,
-        weekNumberFormat: {
-          week: 'narrow'
-        },
-        firstDay: 1,
-        listText: false,
-        navLinks: true, // can click day/week names to navigate views
-        nowIndicator: true,
-        dayMaxEvents: true, // allow "more" link when too many events
-        dayMaxEventRows: 1,
-        showNonCurrentDates: false,
-        events: eventosJSON // Carga de eventos desde JSON
-      });
+    <!-- FullCalendar JS -->
+    <!--<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>-->
+    <script src="./js/fullcalendar.global.js"></script>
+    <script src="./js/locales-all/global.js"></script>
+    <script src="./js/data.js"></script>
+    <script src="./css/themes/monarch/global.js"></script>
 
-      calendar.render();
-    });
-  </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #f5f5f5;
+        }
 
-  <style>
-    html, body {
-      overflow: hidden; /* don't do scrollbars */
-    }
-
-    body {
-      font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-      font-size: 14px;
-    }
-
-    #calendar-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-    }
-
-    .fc-header-toolbar {
-      /*
-      the calendar will be butting up against the edges,
-      but let's scoot in the header's buttons
-      */
-      padding-top: 1em;
-      padding-left: 1em;
-      padding-right: 1em;
-    }
-
-    #calendar {
-      max-width: 900px;
-      margin: 40px auto;
-    }
-  </style>
+        #calendar {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
 </head>
+
 <body>
-  <!--<body data-color-scheme="dark">-->
-  <div id='calendar-container'>
-    <div id='calendar'></div>
-  </div>
+
+    <div id="calendar"></div>
+
+    <script>
+
+        /*
+         * ==========================================================
+         * CONFIGURACIÓN DEL CICLO
+         * ==========================================================
+         *
+         * 1 = lunes
+         * 2 = martes
+         * 3 = miércoles
+         * 4 = jueves
+         * 5 = viernes
+         * 6 = sábado
+         * 7 = domingo
+         */
+
+        const ciclo = [
+
+            // Semana 1
+            {
+                nombre: "DÍA",
+                dias: [
+                    { dia: 1, turno: "DÍA" },
+                    { dia: 2, turno: "DÍA" },
+                    { dia: 3, turno: "DÍA" },
+                    { dia: 4, turno: "DÍA" }
+                ]
+            },
+
+            // Semana 2
+            {
+                nombre: "DÍA",
+                dias: [
+                    { dia: 1, turno: "DÍA" },
+                    { dia: 2, turno: "DÍA" },
+                    { dia: 3, turno: "DÍA" },
+                    { dia: 4, turno: "DÍA" }
+                ]
+            },
+
+            // Semana 3
+            {
+                nombre: "MIXTA",
+                dias: [
+                    { dia: 1, turno: "NOCHE" },
+                    { dia: 2, turno: "NOCHE" },
+                    { dia: 5, turno: "DÍA" }
+                ]
+            },
+
+            // Semana 4
+            {
+                nombre: "MIXTA",
+                dias: [
+                    { dia: 2, turno: "NOCHE" },
+                    { dia: 3, turno: "NOCHE" },
+                    { dia: 5, turno: "DÍA" },
+                    { dia: 7, turno: "NOCHE" }
+                ]
+            },
+
+            // Semana 5
+            {
+                nombre: "NOCHE",
+                dias: [
+                    { dia: 3, turno: "NOCHE" },
+                    { dia: 4, turno: "NOCHE" },
+                    { dia: 5, turno: "NOCHE" },
+                    { dia: 7, turno: "NOCHE" }
+                ]
+            },
+
+            // Semana 6
+            {
+                nombre: "NOCHE",
+                dias: [
+                    { dia: 1, turno: "NOCHE" },
+                    { dia: 4, turno: "NOCHE" },
+                    { dia: 5, turno: "NOCHE" }
+                ]
+            }
+        ];
+
+
+        /*
+         * ==========================================================
+         * FECHA DE REFERENCIA
+         * ==========================================================
+         *
+         * El lunes 30/06/2025 comienza la semana NOCHE 1.
+         *
+         * En nuestro array:
+         *
+         * 0 = DÍA 1
+         * 1 = DÍA 2
+         * 2 = MIXTA 1
+         * 3 = MIXTA 2
+         * 4 = NOCHE 1
+         * 5 = NOCHE 2
+         *
+         * Por lo tanto:
+         */
+
+        const fechaReferencia = crearFechaUTC(2025, 6, 30);
+
+        const semanaReferencia = 5;
+
+
+        /*
+         * ==========================================================
+         * FUNCIÓN PARA CREAR FECHAS UTC
+         * ==========================================================
+         *
+         * Usamos UTC internamente para evitar problemas de horario
+         * de verano / zona horaria.
+         */
+
+        function crearFechaUTC(anio, mes, dia) {
+
+            return new Date(
+                Date.UTC(anio, mes - 1, dia)
+            );
+        }
+
+
+        /*
+         * ==========================================================
+         * FORMATEAR FECHA
+         * ==========================================================
+         */
+
+        function formatoFecha(fecha) {
+
+            return fecha.toISOString().split("T")[0];
+
+        }
+
+
+        /*
+         * ==========================================================
+         * SUMAR DÍAS
+         * ==========================================================
+         */
+
+        function sumarDias(fecha, cantidad) {
+
+            const resultado = new Date(fecha);
+
+            resultado.setUTCDate(
+                resultado.getUTCDate() + cantidad
+            );
+
+            return resultado;
+        }
+
+
+        /*
+         * ==========================================================
+         * DIFERENCIA EN DÍAS
+         * ==========================================================
+         */
+
+        function diferenciaDias(fecha1, fecha2) {
+
+            const diferencia =
+                fecha1.getTime() - fecha2.getTime();
+
+            return Math.floor(
+                diferencia / (1000 * 60 * 60 * 24)
+            );
+
+        }
+
+
+        /*
+         * ==========================================================
+         * OBTENER LUNES DE UNA SEMANA
+         * ==========================================================
+         */
+
+        function obtenerLunes(fecha) {
+
+            const resultado = new Date(fecha);
+
+            const diaSemana =
+                resultado.getUTCDay();
+
+            /*
+             * JavaScript:
+             *
+             * 0 = domingo
+             * 1 = lunes
+             * ...
+             * 6 = sábado
+             */
+
+            const diferencia =
+                diaSemana === 0
+                    ? -6
+                    : 1 - diaSemana;
+
+            resultado.setUTCDate(
+                resultado.getUTCDate() + diferencia
+            );
+
+            return resultado;
+
+        }
+
+
+        /*
+         * ==========================================================
+         * OBTENER SEMANA DEL CICLO
+         * ==========================================================
+         */
+
+        function obtenerSemanaDelCiclo(lunes) {
+
+            const semanasTranscurridas =
+                Math.floor(
+                    diferenciaDias(
+                        lunes,
+                        fechaReferencia
+                    ) / 7
+                );
+
+            let indice =
+                (semanaReferencia + semanasTranscurridas)
+                % ciclo.length;
+
+            /*
+             * JavaScript puede producir números negativos
+             * con el operador %.
+             */
+
+            if (indice < 0) {
+                indice += ciclo.length;
+            }
+
+            return indice;
+
+        }
+
+
+        /*
+         * ==========================================================
+         * GENERAR CALENDARIO
+         * ==========================================================
+         *
+         * Esta es la función principal.
+         *
+         * recibe:
+         *
+         *     fechaInicio
+         *     fechaFin
+         *
+         * y devuelve eventos compatibles con FullCalendar.
+         */
+
+        function generarCalendario(fechaInicio, fechaFin) {
+
+            const eventos = [];
+
+            let lunes =
+                obtenerLunes(fechaInicio);
+
+
+            while (lunes < fechaFin) {
+
+                /*
+                 * Averiguamos qué semana del ciclo corresponde.
+                 */
+
+                const indice =
+                    obtenerSemanaDelCiclo(lunes);
+
+                const semana =
+                    ciclo[indice];
+
+
+                /*
+                 * Recorremos los días de trabajo
+                 * de esa semana.
+                 */
+
+                for (const trabajo of semana.dias) {
+
+                    /*
+                     * dia = 1 lunes
+                     *
+                     * Por eso restamos 1 para obtener
+                     * el desplazamiento desde el lunes.
+                     */
+
+                    const fecha =
+                        sumarDias(
+                            lunes,
+                            trabajo.dia - 1
+                        );
+
+
+                    /*
+                     * No agregamos eventos fuera del rango
+                     * solicitado por FullCalendar.
+                     */
+
+                    if (
+                        fecha >= fechaInicio &&
+                        fecha < fechaFin
+                    ) {
+
+                        eventos.push({
+
+                            title: trabajo.turno,
+
+                            start: formatoFecha(fecha),
+
+                            allDay: true,
+
+                            extendedProps: {
+
+                                tipoSemana: semana.nombre,
+
+                                semanaCiclo: indice + 1,
+
+                                diaSemana: trabajo.dia
+
+                            }
+
+                        });
+
+                    }
+
+                }
+
+
+                /*
+                 * Pasamos a la siguiente semana.
+                 */
+
+                lunes =
+                    sumarDias(lunes, 7);
+
+            }
+
+
+            return eventos;
+
+        }
+
+
+        /*
+         * ==========================================================
+         * INICIALIZAR FULLCALENDAR
+         * ==========================================================
+         */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const elemento =
+                    document.getElementById("calendar");
+
+
+                const calendar =
+                    new FullCalendar.Calendar(
+                        elemento,
+                        {
+
+                            initialView:
+                                "dayGridMonth",
+
+                            locale: "es",
+
+                            firstDay: 1,
+
+                            height: "auto",
+
+                            headerToolbar: {
+
+                                left:
+                                    "prev,next today",
+
+                                center:
+                                    "title",
+
+                                right:
+                                    "dayGridMonth"
+                            },
+
+                            weekNumbers: true,
+
+                            weekNumberFormat: {
+                             week: 'narrow'
+                            },
+
+                            firstDay: 1,
+
+                            navLinks: true, // can click day/week names to navigate views
+                            
+                            nowIndicator: true,
+                            
+                            dayMaxEventRows: 1,
+                            
+                            showNonCurrentDates: false,
+                            
+                            /*
+                             * FullCalendar llama a esta función
+                             * cuando necesita los eventos.
+                             */
+
+                            events: function (
+                                info,
+                                successCallback,
+                                failureCallback
+                            ) {
+
+                                try {
+
+                                    const eventos =
+                                        generarCalendario(
+                                            info.start,
+                                            info.end
+                                        );
+
+                                    successCallback(eventos);
+
+                                }
+                                catch (error) {
+
+                                    console.error(error);
+
+                                    failureCallback(error);
+
+                                }
+
+                            },
+
+
+                            /*
+                             * Cuando hacemos clic sobre un evento.
+                             */
+
+                            eventClick: function(info) {
+
+                                const evento =
+                                    info.event;
+
+                                alert(
+
+                                    "Fecha: "
+                                    + evento.start.toLocaleDateString("es-MX")
+                                    + "\n\n"
+                                    + "Turno: "
+                                    + evento.title
+                                    + "\n"
+                                    + "Semana del ciclo: "
+                                    + evento.extendedProps.semanaCiclo
+                                    + "\n"
+                                    + "Tipo: "
+                                    + evento.extendedProps.tipoSemana
+
+                                );
+
+                            }
+
+                        }
+                    );
+
+
+                calendar.render();
+
+            }
+        );
+
+    </script>
+
 </body>
 </html>
